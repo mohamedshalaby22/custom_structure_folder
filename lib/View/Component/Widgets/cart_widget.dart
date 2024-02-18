@@ -1,3 +1,4 @@
+import 'package:custom_structure_folder/Utils/extensions.dart';
 import 'package:flutter/material.dart';
 import '../../../Constant/app_constant.dart';
 import '../AppWidgets/app_text.dart';
@@ -11,10 +12,13 @@ class CartWidget extends StatelessWidget {
     required this.quantity,
     required this.increase,
     required this.decrease,
+    required this.canDelete,
   }) : super(key: key);
   final String image, title, price;
   final int quantity;
   final VoidCallback increase, decrease;
+  final bool canDelete;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +26,9 @@ class CartWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-          color: Colors.grey[100], borderRadius: BorderRadius.circular(10)),
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Row(
         children: [
           ClipRRect(
@@ -34,9 +40,7 @@ class CartWidget extends StatelessWidget {
               fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(
-            width: 15,
-          ),
+          15.width,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,9 +50,7 @@ class CartWidget extends StatelessWidget {
                   maxLines: 2,
                   height: 1.5,
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                15.height,
                 Row(
                   children: [
                     AppText(
@@ -61,42 +63,51 @@ class CartWidget extends StatelessWidget {
             ),
           ),
           Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(6)),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      increase();
-                    },
-                    child: Icon(
-                      Icons.add,
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(6)),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    increase();
+                  },
+                  child: Icon(
+                    Icons.add,
+                    size: 20,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: AppText(
+                    text: quantity.toString(),
+                    color: Colors.grey[700]!,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    decrease();
+                  },
+                  child: Visibility(
+                    visible: !canDelete,
+                    replacement: Icon(
+                      Icons.delete_rounded,
                       size: 20,
-                      color: Colors.grey[700],
+                      color: Colors.red[300],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: AppText(
-                      text: quantity.toString(),
-                      color: Colors.grey[700]!,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      decrease();
-                    },
                     child: Icon(
                       Icons.remove,
                       size: 20,
                       color: Colors.grey[700],
                     ),
                   ),
-                ],
-              )),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -1,5 +1,7 @@
-import 'package:custom_structure_folder/Constant/app_constant.dart';
+import 'dart:math';
+
 import 'package:custom_structure_folder/Controller/products.dart';
+import 'package:custom_structure_folder/Utils/extensions.dart';
 import 'package:custom_structure_folder/View/Component/AppWidgets/app_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,20 +21,14 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 80,
-              ),
+              80.height,
               Icon(
                 Icons.menu,
                 color: Colors.grey[700],
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              20.height,
               const AppSearchForm(),
-              const SizedBox(
-                height: 25,
-              ),
+              25.height,
               SizedBox(
                 width: double.infinity,
                 child: AppText(
@@ -41,9 +37,7 @@ class HomePage extends StatelessWidget {
                   color: Colors.grey[600]!,
                 ),
               ),
-              const SizedBox(
-                height: 35,
-              ),
+              35.height,
               const AppText(
                 text: 'All Products',
                 color: Colors.black,
@@ -51,43 +45,44 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               GetBuilder(
-                  init: Get.put(ProductsController()),
-                  builder: (productsController) => Visibility(
-                        visible: productsController.isLoaded,
-                        replacement: const Padding(
-                          padding: EdgeInsets.only(top: 150),
-                          child: Center(
-                            child: CupertinoActivityIndicator(
-                              radius: 12,
-                            ),
+                init: Get.put(ProductsController()),
+                builder: (productsController) => Visibility(
+                  visible: productsController.isLoaded,
+                  replacement: const Padding(
+                    padding: EdgeInsets.only(top: 150),
+                    child: Center(
+                      child: CupertinoActivityIndicator(
+                        radius: 12,
+                      ),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ...List.generate(
+                        productsController.allProducts.length,
+                        (index) => SingleChildScrollView(
+                          child: ProductsWidget(
+                            price: productsController.allProducts[index].price,
+                            title: productsController.allProducts[index].title,
+                            image: productsController.allProducts[index].image,
+                            isAdded: productsController.isItemAdded(
+                                productsController.allProducts[index].id),
+                            onAdd: () {
+                              productsController.addProductsToCart(
+                                productsController.allProducts[index],
+                                context,
+                              );
+                            },
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            ...List.generate(
-                                productsController.allProducts.length,
-                                (index) => SingleChildScrollView(
-                                      child: ProductsWidget(
-                                          price: productsController
-                                              .allProducts[index].price,
-                                          title: productsController
-                                              .allProducts[index].title,
-                                          image: productsController
-                                              .allProducts[index].image,
-                                          onAdd: () {
-                                            productsController
-                                                .addProductsToCart(
-                                                    productsController
-                                                        .allProducts[index],
-                                                    context);
-                                          }),
-                                    ))
-                          ],
-                        ),
-                      ))
+                      )
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ),

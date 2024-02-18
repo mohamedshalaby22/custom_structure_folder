@@ -37,8 +37,9 @@ class CartPage extends StatelessWidget {
                                   productsController.cartProducts[index].image,
                               quantity: productsController
                                   .cartProducts[index].quantity,
+                              canDelete: productsController.canDelete(index),
                               decrease: () {
-                                productsController.canDecrease(index);
+                                productsController.canDecrease(index, context);
                               },
                               increase: () {
                                 productsController.canIncrease(index);

@@ -1,3 +1,4 @@
+import 'package:custom_structure_folder/Utils/extensions.dart';
 import 'package:flutter/material.dart';
 import '../../../Constant/app_constant.dart';
 import '../AppWidgets/app_text.dart';
@@ -8,10 +9,12 @@ class ProductsWidget extends StatelessWidget {
       required this.price,
       required this.title,
       required this.image,
+      required this.isAdded,
       required this.onAdd})
       : super(key: key);
   final String image, title, price;
   final VoidCallback onAdd;
+  final bool isAdded;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,9 +34,7 @@ class ProductsWidget extends StatelessWidget {
               fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(
-            width: 15,
-          ),
+          15.width,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,9 +44,7 @@ class ProductsWidget extends StatelessWidget {
                   maxLines: 2,
                   height: 1.5,
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                15.height,
                 AppText(
                   text: '\$$price',
                   color: AppConstant.mainColor,
@@ -55,18 +54,29 @@ class ProductsWidget extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              onAdd();
+              if (!isAdded) {
+                onAdd();
+              }
             },
-            child: Container(
+            child: AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: isAdded ? Colors.black : Colors.grey[300],
                     borderRadius: BorderRadius.circular(6)),
-                child: Icon(
-                  Icons.add,
-                  size: 20,
-                  color: Colors.grey[700],
+                child: Visibility(
+                  visible: !isAdded,
+                  replacement: const Icon(
+                    Icons.check,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                  child: Icon(
+                    Icons.add,
+                    size: 20,
+                    color: Colors.grey[700],
+                  ),
                 )),
           ),
         ],

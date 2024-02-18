@@ -13,21 +13,23 @@ class ProductsController extends GetxController {
     super.onInit();
   }
 
-  List<AllProducts> allProducts = [];
-  List<AllProducts> cartProducts = [];
+  List<Product> allProducts = [];
+  List<Product> cartProducts = [];
   bool isLoaded = false;
 
   ///////fetchAllProducts
   Future getAllProducts() async {
     isLoaded = false;
     try {
-      http.Response response = await http.get(Uri.parse(AppConstant.baseUrl));
+      http.Response response =
+          await http.get(Uri.parse('${AppConstant.baseUrl}/products'));
       if (response.statusCode == 200) {
         allProducts = allProductsFromJson(response.body);
       }
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
+        // debugPrint(e.toString());
       }
     }
     isLoaded = true;
@@ -35,7 +37,7 @@ class ProductsController extends GetxController {
   }
 
   ///////addProductsToCart
-  void addProductsToCart(AllProducts allProducts, context) {
+  void addProductsToCart(Product allProducts, context) {
     if (cartProducts
         .where((element) => element.id == allProducts.id)
         .isNotEmpty) {
@@ -52,7 +54,7 @@ class ProductsController extends GetxController {
   }
 
   ///////deleteProductsFromCart
-  void deleteProductsFromCart(AllProducts allProducts, context) {
+  void deleteProductsFromCart(Product allProducts, context) {
     cartProducts.remove(allProducts);
     SnackBarWidget.showSnackBarWidget(
       context,
@@ -69,7 +71,7 @@ class ProductsController extends GetxController {
           cartProducts[i].quantity * double.parse(cartProducts[i].price);
     }
 
-    return totalPrices.toPrecision(3);
+    return double.parse(totalPrices.toStringAsFixed(2));
   }
 
   void canIncrease(index) {
@@ -79,9 +81,14 @@ class ProductsController extends GetxController {
     update();
   }
 
-  void canDecrease(index) {
+  void canDecrease(index, context) {
     if (cartProducts[index].quantity == 1) {
       cartProducts.removeAt(index);
+      SnackBarWidget.showSnackBarWidget(
+        context,
+        'Deleted From Cart Successfully!',
+        Colors.red[200]!,
+      );
     } else {
       if (cartProducts[index].quantity > 0) {
         cartProducts[index].quantity--;
@@ -89,5 +96,13 @@ class ProductsController extends GetxController {
     }
 
     update();
+  }
+
+  bool isItemAdded(int id) {
+    return cartProducts.where((element) => element.id == id).isNotEmpty;
+  }
+
+  bool canDelete(index) {
+    return cartProducts[index].quantity == 1;
   }
 }
